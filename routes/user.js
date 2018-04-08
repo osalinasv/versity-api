@@ -1,29 +1,33 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
+var path = require('path')
+var users = require('../controllers/users.js')
 
-const User = require('../models/user');
+//register user
+router.post('/user/register', users.postUser);
 
-// Get all users
-router.get('/users', (req, res, next) => {
-  User.find((err, users) => {
-    res.send(users);
-  });
-});
+//update user
+router.post('/user/update', users.updateUser);
 
-// Get one user by id
-router.get('/user', (req, res, next) => {
-  User.findById(req.params.id, (err, user) => {
-    res.send(user);
-  });
-});
+//login user
+router.post('/user/login', users.loginUser);
 
-// Create user
-router.post('/user', (req, res, next) => {
-  User.create(req.body)
-		.then((user) => {
-			res.send(user);
-		})
-		.catch(next);
-});
+//change password
+router.post('/user/changepassword', users.changePassword);
+
+//forgot password
+router.post('/user/forgotpassword', users.forgotPassword);
+
+//reset password
+router.post('/user/reset/:token', users.resetPassword)
+
+//forgot username
+router.post('/user/forgotusername', users.forgotName);
+
+//logout user
+router.get('/user/logout', users.logoutUser);
+
+//status 
+router.get('/user/status', users.getUserStatus);
 
 module.exports = router;
