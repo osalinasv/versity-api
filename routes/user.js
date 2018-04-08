@@ -3,11 +3,6 @@ var router = express.Router();
 var path = require('path')
 var users = require('../controllers/users.js')
 
-//Home endpoint
-router.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public'))
-});
-
 //register user
 router.post('/user/register', users.postUser);
 
@@ -18,10 +13,10 @@ router.post('/user/update', users.updateUser);
 router.post('/user/login', users.loginUser);
 
 //change password
-router.post('/user/changepassword', users.changePass);
+router.post('/user/changepassword', users.changePassword);
 
 //forgot password
-router.post('/user/forgotpassword', users.forgotPass);
+router.post('/user/forgotpassword', users.forgotPassword);
 
 //reset password
 router.post('/user/reset/:token', users.resetPassword)
@@ -33,16 +28,6 @@ router.post('/user/forgotusername', users.forgotName);
 router.get('/user/logout', users.logoutUser);
 
 //status 
-router.get('/user/status', users.getuserStatus);
-
-//find a users information
-router.get('/user/profile/:firstName?', users.getUsers);
-
-//
-// router.get('', )
-//
-// router.get('', )
-//
-// router.get('', )
+router.get('/user/status', users.getUserStatus);
 
 module.exports = router;
