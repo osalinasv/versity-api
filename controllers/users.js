@@ -1,10 +1,10 @@
-var mongoose = require("mongoose");
-var User = require("../models/user");
-var passport = require("passport");
-var crypto = require("crypto");
-var postmark = require("postmark");
-var async = require("async");
-var client = new postmark.Client(
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const passport = require("passport");
+const crypto = require("crypto");
+const postmark = require("postmark");
+const async = require("async");
+const client = new postmark.Client(
 	"99524476-87e5-4b8c-b838-b143918a9a23"
 );
 
