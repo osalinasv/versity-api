@@ -21,6 +21,8 @@ const UserSchema = new Schema({
 	resetPasswordExpires: Date,
 })
 
-const User = UserSchema.plugin(passportLocalMongoose)
+UserSchema.plugin(passportLocalMongoose)
+
+const User = mongoose.model('user', UserSchema)
 
 module.exports = User

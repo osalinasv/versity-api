@@ -12,7 +12,7 @@ const CourseSchema = new Schema({
 		required: true,
 		unique: true,
 	},
-	categories: [{ type: Schema.Types.ObjectId, ref: 'category' }]
+	categories: [String]
 })
 
 const Course = mongoose.model('course', CourseSchema)
