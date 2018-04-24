@@ -1,20 +1,43 @@
 const mongoose = require('mongoose')
 const Course = require('../models/course')
+const CourseResource = require('../models/course_resource')
 const _ = require('lodash')
 
 const createCourse = (req, res) => {
-	Course.create({
+	const course = new Course({
 		title: req.body.title,
 		description: req.body.description || '',
+		author: req.body.author,
 		slug: titleToSlug(req.body.title),
 		categories: req.body.categories || []
 	})
-	.then(course => {
-		res.status(200).send({ course })
-	})
-	.catch(err => {
-		res.status(500).send({ error: err })
-	})
+
+	if (req.body.resources && req.body.resources.length > 0) {
+		console.log('do resources')
+		req.body.resources.forEach(resource => {
+			console.log('do resources forloop')
+
+			const re = new CourseResource(resource)
+			console.log('resource creationg', re)
+
+			re.save((err, _re) => {
+				console.log('resource on save', _re)
+				if (err) res.status(500).send({ error: err })
+			})
+
+			course.resources.push(re._id)
+		})
+
+		course.save((err, c) => {
+			if (err) res.status(500).send({ error: err })
+			else res.status(200).send(c)
+		})
+	} else {
+		course.save((err, c) => {
+			if (err) res.status(500).send({ error: err })
+			else res.status(200).send(c)
+		})
+	}
 }
 
 const titleToSlug = (title) => {
@@ -22,14 +45,16 @@ const titleToSlug = (title) => {
 }
 
 const getCourseBySlug = (req, res) => {
-	Course.findOne({ slug: req.query.slug })
+	Course.findOne({ slug: req.params.slug })
+		.populate('author', 'first_name last_name username')
+		.populate('resources', 'title content mediaURL')
 		.exec((err, course) => {
 			if (err) {
 				res.status(500).json({ error: err })
 			} else if (!_.isEmpty(course)) {
 				res.status(200).send({ course })
 			} else {
-				res.status(401).json({ error: `No course with the slug: ${req.query.slug}` })
+				res.status(401).json({ error: `No course with the slug: ${req.params.slug}` })
 			}
 		})
 }

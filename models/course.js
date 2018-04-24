@@ -7,12 +7,20 @@ const CourseSchema = new Schema({
 		required: true,
 	},
 	description: String,
+	author: {
+		type: Schema.Types.ObjectId,
+		ref: 'user'
+	},
 	slug: {
 		type: String,
 		required: true,
 		unique: true,
 	},
-	categories: [String]
+	categories: [String],
+	resources: [{
+		type: Schema.Types.ObjectId,
+		ref: 'course_resource'
+	}]
 })
 
 const Course = mongoose.model('course', CourseSchema)
