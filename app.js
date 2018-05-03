@@ -1,4 +1,18 @@
+/**
+ * The entry point to the Express.js application. In here the application is configured and the middleware chain is set. It is also here where the connection to the mongoose database is established and configured.
+ * @module app
+ */
+
+/**
+ * The Express.js namespace from which the application is extended
+ * @const {Object}
+ */
 const express = require('express')
+
+/**
+ * The express-session component for managing sessions and access tokens
+ * @const {Object}
+ */
 const session = require('express-session')
 
 const path = require('path')
@@ -10,12 +24,26 @@ const expressSanitizer = require('express-sanitizer')
 const cors = require('cors')
 
 const MongoStore = require('connect-mongo')(session)
+
+/**
+ * The mongoose namespace to create a connection with the database
+ * @const {Object}
+ */
 const mongoose = require('mongoose')
 
 const hash = require('bcrypt-nodejs')
+
+/**
+ * The passport module for authentication
+ * @const {Object}
+ */
 const passport = require('passport')
 const localStrategy = require('passport-local').Strategy
 
+/**
+ * App represents the entire application, holds the routes and configuration
+ * @const {Object}
+ */
 const app = express()
 
 var User = require('./models/user')

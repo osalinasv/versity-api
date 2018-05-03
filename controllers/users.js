@@ -1,15 +1,52 @@
+/**
+ * The controller for the User routes
+ * @module controllers/users
+ */
+
 const mongoose = require("mongoose");
+
+/**
+ * The User model
+ * @const
+ */
 const User = require("../models/user");
+
+/**
+ * The passport namespace
+ * @const
+ */
 const passport = require("passport");
+
+/**
+ * The crypto namespace
+ * @const
+ */
 const crypto = require("crypto");
+
+/**
+ * The postmark namespace
+ * @const
+ */
 const postmark = require("postmark");
+
 const async = require("async");
+
+/**
+ * The Postmark unique client id
+ * @const
+ */
 const client = new postmark.Client(
 	"99524476-87e5-4b8c-b838-b143918a9a23"
 );
 
 module.exports = {
-	getUsers: function(req, res) {
+	/**
+	 * Get all users' data
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	getUsers: function(req, res, next) {
 		var firstName = req.params.firstName;
 		User.find(function(err, users) {
 			if (err) return console.error(err);
@@ -17,7 +54,18 @@ module.exports = {
 		});
 	},
 
-	getUserProfile: function(req, res) {
+	/**
+	 * Get a user's data from the request parameters of the form:
+	 * ```
+	 * req.params: {
+	 * 	username: String
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	getUserProfile: function(req, res, next) {
 		var username = req.params.username;
 		User.find(function(err, users) {
 			if (err) return console.error(err);
@@ -25,7 +73,21 @@ module.exports = {
 		});
 	},
 
-	postUser: function(req, res) {
+	/**
+	 * Create and save an user from the request body of form:
+	 * ```
+	 * req.body: {
+	 * 	firstName: String,
+	 * 	lastName: String,
+	 * 	userName: String,
+	 * 	email: String
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	postUser: function(req, res, next) {
 		User.find({email: req.body.email}, function(err, user){
 			if(err){
 				return res.status(500).json({
@@ -62,7 +124,22 @@ module.exports = {
 		})
 	},
 
-	updateUser: function(req, res) {
+	/**
+	 * Update an user from the request body of form:
+	 * ```
+	 * req.body: {
+	 * 	_id: String,
+	 * 	firstName: String,
+	 * 	lastName: String,
+	 * 	userName: String,
+	 * 	email: String
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	updateUser: function(req, res, next) {
 		var query = { _id: req.body._id };
 		var updateUser = {
 			firstname: req.body.firstname,
@@ -97,7 +174,20 @@ module.exports = {
 		}
 	},
 
-	changePassword: function(req, res) {
+	/**
+	 * Change an users password from the request body of form:
+	 * ```
+	 * req.body: {
+	 * 	_id: String,
+	 * 	oldPassword: String,
+	 * 	confirmNewPassword: String
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	changePassword: function(req, res, next) {
 		var oldPassword = req.body.oldPassword;
 		var confirmNewPassword = req.body.confirmNewPassword;
 		User.findById(req.user._id, function(err, user) {
@@ -120,7 +210,18 @@ module.exports = {
 		});
 	},
 
-	forgotPassword: function(req, res) {
+	/**
+	 * Send restoration email and set token from the request body of form:
+	 * ```
+	 * req.body: {
+	 * 	username: String
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	forgotPassword: function(req, res, next) {
 		async.waterfall(
 			[
 				function(done) {
@@ -181,7 +282,23 @@ module.exports = {
 		);
 	},
 
-	resetPassword: function(req, res) {
+	/**
+	 * Reset an users's password from the request form:
+	 * ```
+	 * req: {
+	 * 	params: {
+	 * 		token: String
+	 * 	},
+	 * 	body: {
+	 * 		confirmNewPassword: String
+	 * 	}
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	resetPassword: function(req, res, next) {
 		async.waterfall(
 			[
 				function(done) {
@@ -237,7 +354,19 @@ module.exports = {
 		);
 	},
 
-	forgotName: function(req, res) {
+	/**
+	 * Recover username from the request body of form:
+	 * ```
+	 * req.body: {
+	 * 	email: String,
+	 * 	
+	 * }
+	 * ```
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	forgotName: function(req, res, next) {
 		if (!req.body.email) {
 			return res.status(500).json({
 				message: "You did not enter an email."
@@ -294,7 +423,13 @@ module.exports = {
 		}
 	},
 
-	loginUser: function(req, res) {
+	/**
+	 * Sign in an user
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	loginUser: function(req, res, next) {
 		passport.authenticate("local", function(err, user, info) {
 			if (err) {
 				return next(err);
@@ -318,7 +453,13 @@ module.exports = {
 		})(req, res);
 	},
 
-	logoutUser: function(req, res) {
+	/**
+	 * Sign out an user and delete session token
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	logoutUser: function(req, res, next) {
 		req.logout();
 		res.status(200).json({
 			message: "User Logged out",
@@ -326,7 +467,13 @@ module.exports = {
 		});
 	},
 
-	getUserStatus: function(req, res) {
+	/**
+	 * Get an user's data if the user is athenticated
+	 * @param {Object} req The incoming request object from Express.js
+	 * @param {Object} res The placeholder response object
+	 * @param {Object} next The next middleware in the Express.js chain
+	 */
+	getUserStatus: function(req, res, next) {
 		if (req.isAuthenticated()) {
 			res.status(200).json({
 				status: true,

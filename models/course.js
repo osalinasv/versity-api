@@ -1,6 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+/**
+ * The Course mongoose schema
+ * @class
+ * @property {String} title The course's unique title
+ * @property {String} description The course's description
+ * @property {Object} author The course's assigned author User object
+ * @property {String} slug The course's unique URL slug
+ * @property {String[]} categories The course's list of categories
+ * @property {Object[]} resources The course's list of CourseResource objects
+ */
 const CourseSchema = new Schema({
 	title: {
 		type: String,

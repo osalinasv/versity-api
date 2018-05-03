@@ -1,9 +1,38 @@
+/**
+ * The controller for the User routes
+ * @module controllers/courses
+ */
+
 const mongoose = require('mongoose')
+
+/**
+ * The Course model
+ * @const
+ */
 const Course = require('../models/course')
+
+/**
+ * The CourseResource model
+ * @const
+ */
 const CourseResource = require('../models/course_resource')
 const _ = require('lodash')
 
-const createCourse = (req, res) => {
+/**
+ * Creates and stores a course from the request body of form:
+ * ```
+ * req.body: {
+ * 	title: String,
+ * 	description: String|undefined,
+ * 	author: String,
+ * 	categories: String|Array<String>
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+const createCourse = (req, res, next) => {
 	const course = new Course({
 		title: req.body.title,
 		description: req.body.description || '',
@@ -40,11 +69,30 @@ const createCourse = (req, res) => {
 	}
 }
 
+/**
+ * Returns an underscored shortened URL version of the supplied title
+ * @param {String} title The title to process
+ * @returns {String} The resulting URL slug
+ */
 const titleToSlug = (title) => {
-	return encodeURIComponent(title.toLowerCase().replace(' ', '_'))
+	const words = title.toLowerCase().split(' ')
+	const section = words.slice(0, (words.length > 10) ? 10 : words.length)
+
+	return encodeURIComponent(section.join('_'))
 }
 
-const getCourseBySlug = (req, res) => {
+/**
+ * Get a course's data from the request parameters of form:
+ * ```
+ * req.params: {
+ * 	slug: String
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+const getCourseBySlug = (req, res, next) => {
 	Course.findOne({ slug: req.params.slug })
 		.populate('author', 'first_name last_name username')
 		.populate('resources', 'title content mediaURL')
@@ -59,7 +107,19 @@ const getCourseBySlug = (req, res) => {
 		})
 }
 
-const getCoursesByCategory = (req, res) => {
+/**
+ * Get a course or course list's data from the request body of form:
+ * ```
+ * req.params: {
+ * 	categories: String|Array<String>,
+ * 	size: Int
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+const getCoursesByCategory = (req, res, next) => {
 	const { categories, size } = req.body
 	const collection = [].concat(categories)
 
@@ -86,7 +146,19 @@ const getCoursesByCategory = (req, res) => {
 		})
 }
 
-const getCoursesBySearch = (req, res) => {
+/**
+ * Get a course or course list's data from the request body of form:
+ * ```
+ * req.params: {
+ * 	keywords: String|Array<String>,
+ * 	size: Int
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+const getCoursesBySearch = (req, res, next) => {
 	const { keywords, size } = req.body
 	const collection = [].concat(keywords)
 
