@@ -9,7 +9,7 @@ This is a web application built with [Express.js](http://expressjs.com/) 4.15.5 
 Clone or download the repository:
 
 ```
-$ it clone https://github.com/omarsalinas16/versity-api.git
+$ git clone https://github.com/omarsalinas16/versity-api.git
 ```
 
 This is a [Node.js](http://nodejs.org) application, so first make sure you have Node.js version 8.6 or a later compatible (Last tested on 9.1).
