@@ -1,7 +1,6 @@
 /**
  * Module that holds the API routes for obtaining and manipulating users in the database. 
- * @module routes/user
- * @memberof namespace:routes
+ * @module
  */
 
 /**
@@ -19,7 +18,7 @@ const router = express.Router()
 /**
  * The controller which holds the logic for each route
  * @const {Object}
- * @see {@link controllers/users} For more information on how the routes work
+ * @see {@link module:controllers/users} For more information on how the routes work
  */
 const users = require('../controllers/users.js')
 

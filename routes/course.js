@@ -1,25 +1,24 @@
 /**
  * Module that holds the API routes for obtaining and manipulating the courses in the database. 
- * @module routes/course
- * @memberof routes
+ * @module 
  */
 
 /**
  * The Express.js namespace
  * @const {Object}
  */
-const express = require('express');
+const express = require('express')
 
 /**
  * This router object
  * @const {Object}
  */
-const router = express.Router();
+const router = express.Router()
 
 /**
  * The controller which holds the logic for each route
  * @const {Object}
- * @see {@link controllers/courses} For more information on how the routes work
+ * @see {@link module:controllers/courses} For more information on how the routes work
  */
 const courses = require('../controllers/courses')
 

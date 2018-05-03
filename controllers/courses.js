@@ -1,6 +1,6 @@
 /**
- * The controller for the User routes
- * @module controllers/courses
+ * The controller for the Course routes
+ * @module
  */
 
 const mongoose = require('mongoose')

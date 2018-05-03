@@ -1,6 +1,6 @@
 /**
  * The entry point to the Express.js application. In here the application is configured and the middleware chain is set. It is also here where the connection to the mongoose database is established and configured.
- * @module app
+ * @module
  */
 
 /**
