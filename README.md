@@ -21,7 +21,7 @@ $ cd versity-api
 $ npm i
 ```
 
-## Running the App
+## Running and deployment
 
 Start the server in production mode with:
 
