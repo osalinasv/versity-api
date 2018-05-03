@@ -23,6 +23,25 @@ $ npm i
 
 ## Running the App
 
+Start the server in production mode with:
+
+```
+npm start
+```
+
+Start the server in development mode with:
+```
+npm run dev
+```
+
+By default the server will be listening for connections on [http://localhost:3000/](http://localhost:3000/)
+
+To generate documentation run the following, the output will be in `/docs`
+
+```
+npm run docs
+```
+
 ## Built With
 
 * [Node.js](http://nodejs.org) - Dvelopment environment used
