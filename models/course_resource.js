@@ -28,6 +28,8 @@ const CourseResourceSchema = new mongoose.Schema({
 		enum: ['text', 'image', 'video'],
 		default: 'text'
 	}
+}, {
+	timestamps: true
 })
 
 CourseResourceSchema.pre('save', function (next) {

@@ -30,6 +30,8 @@ const UserSchema = new Schema({
 	password: String,
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
+}, {
+	timestamps: true
 })
 
 UserSchema.plugin(passportLocalMongoose)
