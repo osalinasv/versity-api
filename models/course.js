@@ -50,7 +50,6 @@ const CourseSchema = new Schema({
 
 CourseSchema.pre('save', function (next) {
 	if (_.isString(this.title)) this.title = _.upperFirst(this.title)
-
 	next()
 })
 

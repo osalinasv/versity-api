@@ -80,6 +80,7 @@ module.exports = {
 	 * 	firstName: String,
 	 * 	lastName: String,
 	 * 	userName: String,
+	 * 	password: String,
 	 * 	email: String
 	 * }
 	 * ```
