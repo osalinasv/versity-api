@@ -15,7 +15,7 @@ const passportLocalMongoose = require('passport-local-mongoose')
  * @property {Date} resetPasswordExpires Expiration date for the token
  */
 const UserSchema = new Schema({
-	first_name:  String,
+	first_name: String,
 	last_name: String,
 	username: { 
 		type: String, 

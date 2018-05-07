@@ -3,40 +3,40 @@
  * @module
  */
 
-const mongoose = require( 'mongoose ')
+const mongoose = require('mongoose')
 
 /**
  * The User model
  * @const
  */
-const User = require( '../models/user ')
+const User = require('../models/user')
 
 /**
  * The passport namespace
  * @const
  */
-const passport = require( 'passport ')
+const passport = require('passport')
 
 /**
  * The crypto namespace
  * @const
  */
-const crypto = require( 'crypto ')
+const crypto = require('crypto')
 
 /**
  * The postmark namespace
  * @const
  */
-const postmark = require( 'postmark ')
+const postmark = require('postmark')
 
-const async = require( 'async ')
+const async = require('async')
 
 /**
  * The Postmark unique client id
  * @const
  */
 const client = new postmark.Client(
-	 '99524476-87e5-4b8c-b838-b143918a9a23 '
+	'99524476-87e5-4b8c-b838-b143918a9a23'
 )
 
 module.exports = {
@@ -97,7 +97,7 @@ module.exports = {
 			if(user.length > 0){
 				if(user[0].email == req.body.email){
 					return res.status(401).json({
-						message:  'A user with the given email is already registered. '
+						message: 'A user with the given email is already registered.'
 					})
 				}
 			}
@@ -154,20 +154,20 @@ module.exports = {
 			!updateUser.username
 		) {
 			return res.status(401).json({
-				message:  'One or more fields are empty '
+				message: 'One or more fields are empty'
 			})
 		} else {
 			User.update(query, updateUser, function(err, result) {
 				if (err) {
 					return res.status(401).json({
 						err: err,
-						message:  'User not Updated '
+						message: 'User not Updated'
 					})
 				}
 				if (result) {
 					return res.status(200).json({
 						success: result,
-						message:  'User Updated '
+						message: 'User Updated'
 					})
 				}
 			})
@@ -204,7 +204,7 @@ module.exports = {
 					})
 				}
 				return res.status(200).json({
-					message:  'Password has been updated '
+					message: 'Password has been updated'
 				})
 			})
 		})
@@ -226,7 +226,7 @@ module.exports = {
 			[
 				function(done) {
 					crypto.randomBytes(20, function(err, buf) {
-						var token = buf.toString( 'hex ')
+						var token = buf.toString('hex')
 						done(err, token)
 					})
 				},
@@ -239,7 +239,7 @@ module.exports = {
 						}
 						if (!user) {
 							return res.status(500).json({
-								message:  'No user with that username '
+								message: 'No user with that username'
 							})
 						}
 						if (user) {
@@ -254,22 +254,22 @@ module.exports = {
 				},
 				function(token, user, done) {
 					client.sendEmailWithTemplate({
-						From:  'rene.osman@nih.gov ',
+						From: 'rene.osman@nih.gov',
 						To: user.email,
 						TemplateId: 4884721,
 						TemplateModel: {
-							product_name:  'Node-Mongo ',
-							product_url:  'http:// ' + req.headers.host,
+							product_name: 'Node-Mongo',
+							product_url: 'http://' + req.headers.host,
 							name: user.firstname,
-							action_url:  'http:// ' + req.headers.host +  '/#/reset/ ' + token
+							action_url: 'http://' + req.headers.host + '/#/reset/' + token
 						}
 					})
 					if (done) {
 						return res.status(200).json({
 							message:
-								 'An email has been sent to  ' +
+								'An email has been sent to ' +
 								user.email +
-								 ' with further instructions. '
+								' with further instructions.'
 						})
 					}
 				}
@@ -315,7 +315,7 @@ module.exports = {
 							}
 							if (!user) {
 								return res.status(500).json({
-									message:  'Password reset token is invalid or has expired '
+									message: 'Password reset token is invalid or has expired'
 								})
 							}
 							if (user) {
@@ -342,7 +342,7 @@ module.exports = {
 				},
 				function(user, done) {
 					return res.status(200).json({
-						message:  'Password has been updated '
+						message: 'Password has been updated'
 					})
 				}
 			],
@@ -369,7 +369,7 @@ module.exports = {
 	forgotName: function(req, res, next) {
 		if (!req.body.email) {
 			return res.status(500).json({
-				message:  'You did not enter an email. '
+				message: 'You did not enter an email.'
 			})
 		} else {
 			async.waterfall(
@@ -387,27 +387,27 @@ module.exports = {
 								}
 								if (!user) {
 									return res.status(500).json({
-										message:  'This email is not registered to a user. '
+										message: 'This email is not registered to a user.'
 									})
 								}
 								if (user) {
 									client.sendEmailWithTemplate({
-										From:  'rene.osman@nih.gov ',
+										From: 'rene.osman@nih.gov',
 										To: user.email,
 										TemplateId: 4888201,
 										TemplateModel: {
-											product_name:  'Node-Mongo ',
-											product_url:  'http:// ' + req.headers.host,
+											product_name: 'Node-Mongo',
+											product_url: 'http://' + req.headers.host,
 											name: user.firstname,
 											username: user.username,
-											action_url:  'http:// ' + req.headers.host +  '/#/login '
+											action_url: 'http://' + req.headers.host + '/#/login'
 										}
 									})
 									return res.status(200).json({
 										message:
-											 'An email has been sent to  ' +
+											'An email has been sent to ' +
 											user.email +
-											 ' with further instructions. '
+											' with further instructions.'
 									})
 								}
 							}
@@ -430,7 +430,7 @@ module.exports = {
 	 * @param {Object} next The next middleware in the Express.js chain
 	 */
 	loginUser: function(req, res, next) {
-		passport.authenticate( 'local ', function(err, user, info) {
+		passport.authenticate('local', function(err, user, info) {
 			if (err) {
 				return next(err)
 			}
@@ -443,11 +443,11 @@ module.exports = {
 				if (err) {
 					return res.status(500).json({
 						err: err,
-						message:  'Could not log in user '
+						message: 'Could not log in user'
 					})
 				}
 				res.status(200).json({
-					message:  'Login successful! '
+					message: 'Login successful!'
 				})
 			})
 		})(req, res)
@@ -462,7 +462,7 @@ module.exports = {
 	logoutUser: function(req, res, next) {
 		req.logout()
 		res.status(200).json({
-			message:  'User Logged out ',
+			message: 'User Logged out',
 			user: false
 		})
 	},

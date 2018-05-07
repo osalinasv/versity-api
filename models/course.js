@@ -1,11 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const _ = require('lodash')
 
 /**
  * The Course mongoose schema
  * @class
  * @property {String} title The course's unique title
  * @property {String} description The course's description
+ * @property {String} thumbnailURL The course's thumbnail URL path
  * @property {Object} author The course's assigned author User object
  * @property {String} slug The course's unique URL slug
  * @property {String[]} categories The course's list of categories
@@ -16,7 +18,15 @@ const CourseSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	description: String,
+	description: {
+		type: String,
+		default: ''
+	},
+	thumbnailURL: {
+		type: String,
+		lowercase: true,
+		default: ''
+	},
 	author: {
 		type: Schema.Types.ObjectId,
 		ref: 'user'
@@ -26,11 +36,22 @@ const CourseSchema = new Schema({
 		required: true,
 		unique: true,
 	},
-	categories: [String],
+	categories: {
+		type: [String],
+		lowercase: true
+	},
 	resources: [{
 		type: Schema.Types.ObjectId,
 		ref: 'course_resource'
 	}]
+}, {
+	timestamps: true
+})
+
+CourseSchema.pre('save', function (next) {
+	if (_.isString(this.title)) this.title = _.upperFirst(this.title)
+
+	next()
 })
 
 const Course = mongoose.model('course', CourseSchema)

@@ -82,6 +82,56 @@ const titleToSlug = (title) => {
 }
 
 /**
+ * Get a course or course list's data from the request body of form:
+ * ```
+ * req.body: {
+ * 	keywords: String|String[]|undefined,
+ * 	categories: String|String[]|undefined,
+ * 	populate: Boolean|undefined
+ * 	size: Int|undefined
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+const getCourses = (req, res, next) => {
+	const { 
+		keywords,
+		categories,
+		populate,
+		size
+	} = req.body
+
+	console.log('body:', req.body)
+
+	let search = Course.find({})
+
+	if (!_.isEmpty(categories)) {
+		const cats = [].concat(categories).filter(s => !_.isEmpty(s))
+		search.in('categories', cats)
+	}
+
+	search.populate('author', 'first_name last_name username')
+	if (populate) search.populate('resources')
+
+	if (size && size > 0) search.limit(size)
+	search.sort({ createdAt: -1 })
+
+	search.exec((err, courses) => {
+		console.log('err:', err)
+		console.log('courses:', courses)
+
+		if (err) {
+			next(err)
+			return
+		}
+
+		res.status(200).send(courses)
+	})
+}
+
+/**
  * Get a course's data from the request parameters of form:
  * ```
  * req.params: {
@@ -107,78 +157,8 @@ const getCourseBySlug = (req, res, next) => {
 		})
 }
 
-/**
- * Get a course or course list's data from the request body of form:
- * ```
- * req.params: {
- * 	categories: String|Array<String>,
- * 	size: Int
- * }
- * ```
- * @param {Object} req The incoming request object from Express.js
- * @param {Object} res The placeholder response object
- * @param {Object} next The next middleware in the Express.js chain
- */
-const getCoursesByCategory = (req, res, next) => {
-	const { categories, size } = req.body
-	const collection = [].concat(categories)
-
-	if (_.isEmpty(collection)) {
-		res.status(401).json({ error: 'No categories provided' })
-		return
-	}
-
-	if (!size || size <= 0) {
-		res.status(401).json({ error: 'The load size can not be zero nor negative' })
-		return
-	}
-
-	Course.find({ categories: { $in: collection } })
-		.limit(size)
-		.exec((err, courses) => {
-			if (err) {
-				res.status(401).json({ error: err })
-			} else if (!_.isElement(courses)) {
-				res.status(200).send({ courses })
-			} else {
-				res.status(401).json({ error: 'There are no courses with these categories' })
-			}
-		})
-}
-
-/**
- * Get a course or course list's data from the request body of form:
- * ```
- * req.params: {
- * 	keywords: String|Array<String>,
- * 	size: Int
- * }
- * ```
- * @param {Object} req The incoming request object from Express.js
- * @param {Object} res The placeholder response object
- * @param {Object} next The next middleware in the Express.js chain
- */
-const getCoursesBySearch = (req, res, next) => {
-	const { keywords, size } = req.body
-	const collection = [].concat(keywords)
-
-	if (_.isEmpty(collection)) {
-		// TODO: When no keywords are provided then just return the latest [size] courses.
-		res.status(401).json({ error: 'No keywords provided' })
-		return
-	}
-
-	if (!size || size <= 0) {
-		res.status(401).json({ error: 'The load size can not be zero nor negative' })
-		return
-	}
-
-	res.status(401).json({ message: 'TODO' })
-}
-
 module.exports = {
 	createCourse,
+	getCourses,
 	getCourseBySlug,
-	getCoursesByCategory,
-	getCoursesBySearch,
 }

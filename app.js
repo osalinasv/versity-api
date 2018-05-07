@@ -9,29 +9,34 @@
  */
 const express = require('express')
 
-/**
- * The express-session component for managing sessions and access tokens
- * @const {Object}
- */
-const session = require('express-session')
-
 const path = require('path')
-
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const expressSanitizer = require('express-sanitizer')
 const cors = require('cors')
 
+const dotenv = require('dotenv')
+dotenv.load()
+
+/**
+ * The express-session component for managing sessions and access tokens
+ * @const {Object}
+ */
+const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 
 /**
- * The mongoose namespace to create a connection with the database
+ * DB represents the extended configured mongoose database connection
+ * @const {Object}
+ * @see {@link module:db} For more information about the database configuration module
+ */
+const db = require('./db')
+/**
+ * App represents the entire application, holds the routes and configuration
  * @const {Object}
  */
-const mongoose = require('mongoose')
-
-const hash = require('bcrypt-nodejs')
+const app = express()
 
 /**
  * The passport module for authentication
@@ -40,45 +45,17 @@ const hash = require('bcrypt-nodejs')
 const passport = require('passport')
 const localStrategy = require('passport-local').Strategy
 
-/**
- * App represents the entire application, holds the routes and configuration
- * @const {Object}
- */
-const app = express()
-
-var User = require('./models/user')
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
-
-// Mongoose connection
-mongoose.connect('mongodb://jesus:1455103429@ds111648.mlab.com:11648/versity')
-mongoose.Promise = global.Promise
-
-app.use(logger('dev'))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(expressSanitizer())
-app.use(cors({ credentials: true, origin: true }))
-
 app.use(session({
 	secret: 'keyboard cat',
 	resave: true,
 	saveUninitialized: true,
 	store: new MongoStore({
-		url: 'mongodb://jesus:1455103429@ds111648.mlab.com:11648/versity',
-		ttl: 1 * 1 * 60 * 60
+		mongooseConnection: db
 	})
 }))
 
-app.use(passport.initialize())
-app.use(passport.session())
-
-app.use(express.static(path.join(__dirname, 'public')))
-
-// configure passport
+// Passport setup
+const User = require('./models/user')
 //authenticate function passport provides for you
 passport.use('local', new localStrategy(User.authenticate()))
 //Passport will maintain persistent login sessions. 
@@ -86,6 +63,23 @@ passport.use('local', new localStrategy(User.authenticate()))
 //serialized to the session, and deserialized when subsequent requests are made.
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'jade')
+
+// Middlewares
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(expressSanitizer())
+app.use(cors({ credentials: true, origin: true }))
+
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api', require('./routes/user'))
 app.use('/api', require('./routes/course'))
