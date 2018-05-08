@@ -131,7 +131,7 @@ const titleToSlug = (title, maximum = 7) => {
  * Get a course or course list's data from the request body of form:
  * ```
  * req.body: {
- * 	keywords: String|String[]|undefined,
+ * 	keywords: String|undefined,
  * 	categories: String|String[]|undefined,
  * 	populate: Boolean|undefined
  * 	size: Int|undefined
@@ -151,9 +151,8 @@ const getCourses = (req, res, next) => {
 
 	let search = Course.find({})
 
-	if ((_.isArray(keywords) && !_.isEmpty(keywords)) || (_.isString(keywords) && keywords)) {
-		const keys = [].concat(keywords).filter(s => s)
-		search.in('title', keys)
+	if (keywords && _.isString(keywords)) {
+		search.where('title', new RegExp(`${keywords}`, 'i'))
 	}
 
 	if ((_.isArray(categories) && !_.isEmpty(categories)) || (_.isString(categories) && categories)) {
