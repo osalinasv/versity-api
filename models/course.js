@@ -10,7 +10,7 @@ const CourseResource = require('./course_resource')
  * @property {String} title The course's unique title
  * @property {String} description The course's description
  * @property {String} thumbnailURL The course's thumbnail URL path
- * @property {Object} author The course's assigned author User object
+ * @property {Object} _author The course's assigned author User object
  * @property {String} slug The course's unique URL slug
  * @property {String[]} categories The course's list of categories
  * @property {Object[]} resources The course's list of CourseResource objects
@@ -29,7 +29,7 @@ const CourseSchema = new Schema({
 		lowercase: true,
 		default: ''
 	},
-	author: {
+	_author: {
 		type: Schema.Types.ObjectId,
 		ref: 'user'
 	},
@@ -51,9 +51,7 @@ const CourseSchema = new Schema({
 })
 
 CourseSchema.pre('remove', function (next) {
-	const course = this
-
-	CourseResource.remove({ _id: { $in: course.resources } }, (err) => {
+	CourseResource.remove({ _course: { $in: this._id } }, (err) => {
 		if (err) next(err)
 	})
 

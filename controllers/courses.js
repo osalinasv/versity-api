@@ -65,7 +65,7 @@ const createCourse = async (req, res, next) => {
 		slug: titleToSlug(title),
 		description,
 		thumbnailURL,
-		author: authorRes._id,
+		_author: authorRes._id,
 		categories: [].concat(categories).filter(s => _.isString(s) && s)
 	})
 
@@ -83,7 +83,7 @@ const createCourse = async (req, res, next) => {
 	const filteredRes = [].concat(resources).filter(o => _.isObject(o) && !_.isEmpty(o))
 
 	for (const r of filteredRes) {
-		const resource = new CourseResource(r)
+		const resource = new CourseResource({ ...r, _course: courseRes._id })
 
 		try {
 			const resourceRes = await resource.save()
@@ -161,7 +161,7 @@ const getCourses = (req, res, next) => {
 		search.in('categories', cats)
 	}
 
-	search.populate('author', 'first_name last_name username')
+	search.populate('_author', 'first_name last_name username')
 
 	if (populate === 'true') search.populate('resources', 'title content mediaURL')
 	else search.select('-resources')
@@ -191,7 +191,7 @@ const getCourseBySlug = (req, res, next) => {
 
 	Course.findOne({ slug })
 		.select('-slug')
-		.populate('author', 'first_name last_name username')
+		.populate('_author', 'first_name last_name username')
 		.populate('resources', 'title content mediaURL')
 		.exec((err, course) => {
 			if (err) {
@@ -204,6 +204,17 @@ const getCourseBySlug = (req, res, next) => {
 		})
 }
 
+/**
+ * Delete a course from the request parameters of form:
+ * ```
+ * req.params: {
+ * 	id: String
+ * }
+ * ```
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
 const deleteCourseById = (req, res, next) => {
 	const id = _.toString(req.params.id)
 
