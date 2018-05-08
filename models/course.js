@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const _ = require('lodash')
 
+const CourseResource = require('./course_resource')
+
 /**
  * The Course mongoose schema
  * @class
@@ -46,6 +48,16 @@ const CourseSchema = new Schema({
 	}]
 }, {
 	timestamps: true
+})
+
+CourseSchema.pre('remove', function (next) {
+	const course = this
+
+	CourseResource.remove({ _id: { $in: course.resources } }, (err) => {
+		if (err) next(err)
+	})
+
+	next()
 })
 
 CourseSchema.pre('save', function (next) {

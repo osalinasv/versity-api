@@ -204,8 +204,26 @@ const getCourseBySlug = (req, res, next) => {
 		})
 }
 
+const deleteCourseById = (req, res, next) => {
+	const id = _.toString(req.params.id)
+
+	Course.findById(id, (err, course) => {
+		if (err) {
+			return res.status(500).send(err)
+		} else if (!_.isEmpty(course)) {
+			course.remove((err, rem) => {
+				if (err) return res.status(500).send(err)
+				else return res.status(200).send(course)
+			})
+		} else {
+			return res.status(401).json({ message: `No course with the id '${id}'` })
+		}
+	})
+}
+
 module.exports = {
 	createCourse,
 	getCourses,
 	getCourseBySlug,
+	deleteCourseById,
 }

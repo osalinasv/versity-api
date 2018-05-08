@@ -49,4 +49,13 @@ router.post('/course/search', courses.getCourses)
  */
 router.get('/course/:slug', courses.getCourseBySlug)
 
+/**
+ * Route to delete a course by it's id
+ * @function DELETE /api/course/:id
+ * @param {Object} req The incoming request object from Express.js
+ * @param {Object} res The placeholder response object
+ * @param {Object} next The next middleware in the Express.js chain
+ */
+router.delete('/course/:id', courses.deleteCourseById)
+
 module.exports = router
