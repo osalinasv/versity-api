@@ -160,7 +160,7 @@ const getCourses = (req, res, next) => {
 
 	search.populate('_author', 'first_name last_name username')
 
-	if (populate === 'true') search.populate('resources', 'title content mediaURL')
+	if (populate === 'true') search.populate('resources', 'title content mediaURL type')
 	else search.select('-resources')
 
 	const sizeParsed = _.isString(size) ? parseInt(size) : size
@@ -190,7 +190,7 @@ const getCourseBySlug = (req, res, next) => {
 	Course.findOne({ slug })
 		.select('-slug')
 		.populate('_author', 'first_name last_name username')
-		.populate('resources', 'title content mediaURL')
+		.populate('resources', 'title content mediaURL type')
 		.exec((err, course) => {
 			if (err) {
 				return res.status(500).send(err)
