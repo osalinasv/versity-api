@@ -51,7 +51,7 @@ const CourseSchema = new Schema({
 })
 
 CourseSchema.pre('remove', function (next) {
-	CourseResource.remove({ _course: { $in: this._id } }, (err) => {
+	CourseResource.deleteMany({ _course: this._id }, (err) => {
 		if (err) next(err)
 	})
 

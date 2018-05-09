@@ -69,8 +69,6 @@ const createCourse = async (req, res, next) => {
 		categories: [].concat(categories).filter(s => _.isString(s) && s)
 	})
 
-	// return res.status(200).send(course)
-
 	let courseRes = null
 
 	try {
