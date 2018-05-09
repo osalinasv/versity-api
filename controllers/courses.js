@@ -163,7 +163,8 @@ const getCourses = (req, res, next) => {
 	if (populate === 'true') search.populate('resources', 'title content mediaURL')
 	else search.select('-resources')
 
-	if (size && size > 0) search.limit(size)
+	const sizeParsed = _.isString(size) ? parseInt(size) : size
+	if (sizeParsed && sizeParsed > 0) search.limit(sizeParsed)
 	search.sort({ createdAt: -1 })
 
 	search.exec((err, courses) => {
@@ -184,7 +185,7 @@ const getCourses = (req, res, next) => {
  * @param {Object} next The next middleware in the Express.js chain
  */
 const getCourseBySlug = (req, res, next) => {
-	const slug = _.toString(req.params.slug)
+	const slug =  decodeURIComponent(_.toString(req.params.slug)).trim()
 
 	Course.findOne({ slug })
 		.select('-slug')
