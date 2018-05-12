@@ -8,29 +8,26 @@ This is a web application built with [Express.js](http://expressjs.com/) 4.15.5 
 
 Clone or download the repository:
 
-```
-$ git clone https://github.com/omarsalinas16/versity-api.git
+``` bash
+git clone https://github.com/omarsalinas16/versity-api.git
 ```
 
 This is a [Node.js](http://nodejs.org) application, so first make sure you have Node.js version 8.6 or a later compatible (Last tested on 9.1).
 
 Move to the downloaded directory and install dependencies:
 
-```
-$ cd versity-api
-$ npm i
+``` bash
+cd versity-api
+npm i
 ```
 
 ## Running and deployment
 
-Start the server in production mode with:
-
-```
+``` bash
+# Start the server in production mode with:
 npm start
-```
 
-Start the server in development mode with:
-```
+# Start the server in development mode with:
 npm run dev
 ```
 
@@ -38,7 +35,7 @@ By default the server will be listening for connections on [http://localhost:300
 
 To generate documentation run the following, the output will be in `/docs`
 
-```
+``` bash
 npm run docs
 ```
 
