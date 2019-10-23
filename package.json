@@ -22,7 +22,7 @@
     "jade": "^1.11.0",
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.13",
-    "mongoose": "^5.0.4",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "nodemon": "^1.14.12",
     "passport": "^0.4.0",
